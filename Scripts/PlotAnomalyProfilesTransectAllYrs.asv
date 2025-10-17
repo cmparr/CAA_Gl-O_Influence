@@ -8,7 +8,7 @@ close all
 %% Plots TS and Depth profiles for given sites during all summer campaigns, colored by station
 % one TS and one length(vars) set of depth profiles is produced
 set(0, 'defaultAxesFontSize', 14);
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\ModelWork\Functions\Colormaps-ModelStory.mat');
+load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lts\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\ModelWork\Functions\Colormaps-ModelStory.mat');
 %cols_classif = [[0; 0.447; 0.8],[0.850; 0.325; 0.098],[0.929; 0.694; 0.125],[0.466; 0.647; 0.188]]'; % site classif colours
 %cols_classif = cmocean('matter',4); cols_classif(1,:) = brighten(cols_classif(1,:), -0.7); % glacier colours
 

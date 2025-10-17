@@ -5,8 +5,7 @@
 close all
 clear
 
-cd('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\Combined_CTD')
-direct = dir('*.mat');
+direct = dir('../Data/*CTD_Data_50cm_binned.mat');
 
 %% set some figure properties
 set(0, 'defaultAxesFontSize', 15);
@@ -21,8 +20,7 @@ for c = 2 %2:3 % upper or lower wcol
 cond = conditions{c}; % filtering condition applied to input data
 %
 for d = length(direct)
-    folder_dir = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\Combined_CTD';
-    cd(folder_dir);
+    cd('./Data');
     load(direct(d).name);
 
 ctypes = {'space';'time';'continuum'};
@@ -261,15 +259,12 @@ xlim([-4.5 7]); ylim([-3.5 6.5]);
 grid();
 
 %% saving
- rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\Combined_Nuts_CTD\PCA Results-All years\PaperPCAs\';
+ rootfol = '../figures/';
 %
 conds = string(regexprep(cond, ' ', ''));
 ax = gca;
 saveas(fig4,strcat(rootfol,'PC', num2str(p1), 'vsPC', num2str(p2), '-scatter-', ctype,'-', subset, '-', conds,'-opensites.png'));
-if y == 3
-saveas(fig_var,strcat(rootfol, 'VarianceExplained-', subset, '-', conds,'.png'));
-saveas(fig_eig,strcat(rootfol, 'PC1-2-VarExplanation-', subset, '-', conds,'.png'));
-end
+
 
 close all
 cond =  conditions{c};

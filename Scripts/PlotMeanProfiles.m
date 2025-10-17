@@ -9,7 +9,7 @@ close all
 set(0, 'defaultAxesFontSize', 13);
 
 % load data
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\Combined_CTD\combined_nuts_ctd_all_noflag.mat');
+load('../Data/combined_nuts_ctd_all_noflag.mat');
 
 % 
 clrs = cmocean('haline', 4)';
@@ -57,6 +57,6 @@ end
 nexttile(6);
 l =legend(num2str([2019:2022]'), 'Fontsize', 15, 'Location', 'southeast');
 %
-cd('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_plots\Plots-Claire\Mean_Profiles');
+cd('..\figures\');
 saveas(ax,['MeanProfiles_Year_upper350m.png']);
 

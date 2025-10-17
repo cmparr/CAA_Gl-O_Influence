@@ -6,14 +6,13 @@ close all
 clear
 
 %
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\ModelWork\Colormaps-ModelStory.mat');
+load('../fucntions/Colormaps-ModelStory.mat');
 set(0, 'defaultAxesFontSize', 15);
-rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_plots\Plots-Claire\Obsv. Summary\';
 
 
 %% combineds dataset
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\combined_CTD\combined_ctd_metadata.mat');
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\combined_CTD\combined_nuts_ctd_all.mat');
+load('../Data/combined_ctd_metadata.mat');
+load('../Data/combined_nuts_ctd_all.mat');
 combined.mmdd= [month(combined.Date_yyyy_mm_dd_), day(combined.Date_yyyy_mm_dd_)];
 combined = combined(combined.dist < 20.,:);
 idx = find(~strcmp(combined.Transect, 'Sydkap Glacier - across') & [combined.turb] > 0 & ~contains([combined.Location], {'Talbot'; 'Jones Sound'; 'Harbour';'Terry';'OG';'to'}));
@@ -73,6 +72,5 @@ xlim([2018.5 2022.5]); %ylim([0 80]);
 %l = legend({'Glacierized-Open';'Glacierized-Fjorded';'Riverine-Fjorded';'Riverine-Open'}, 'Location', 'northwest');
 %t = title('$(c)$', 'Interpreter','latex','Units','normalized', 'HorizontalAlignment','left'); t.Position(1) = 0; 
 
-%saveas(gca, [rootfol 'CTDSampleSummary-ClassifStacked.png']);
-saveas(gca, [rootfol 'SampleSummary-combined-ClassifStacked.png']);
+saveas(gca, ['../figures/SampleSummary-combined-ClassifStacked.png']);
 %%

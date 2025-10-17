@@ -8,7 +8,7 @@ close all
 %% Plots TS and Depth profiles for given sites during all summer campaigns, colored by station
 % one TS and one length(vars) set of depth profiles is produced
 set(0, 'defaultAxesFontSize', 14);
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\ModelWork\Functions\Colormaps-ModelStory.mat');
+load('../Functions/Colormaps-ModelStory.mat');
 cols_classif = [[0; 0.447; 0.8],[0.850; 0.325; 0.098],[0.929; 0.694; 0.125],[0.466; 0.647; 0.188]]'; % site classif colours
 %cols_classif = cmocean('matter',4); cols_classif(1,:) = brighten(cols_classif(1,:), -0.7); % glacier colours
 
@@ -48,9 +48,7 @@ end
 % pull correct files from directory
 id_files = {11 13 [14 1] [3 15]};
 
-cd('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_matfiles\Claire_PROCESSED\')
-dts = dir('*.mat');
-cd('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\')
+dts = dir('..\Data\*CTD_Data_50cm_binned.mat');
 
 %%%% start plotting
     f_all = figure(1); f_all.Position =  [0  0 600 700]; tiledlayout(1,length(vars), 'TileSpacing','compact','Padding','compact');
@@ -67,7 +65,7 @@ for i = 1:4
     for ii = id_files{i}
     %% select which campaigns
     filename = dts(ii).name;
-    load(['C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_matfiles\Claire_PROCESSED\' filename]);
+    load(['..\Data\' filename]);
  %% Take transects only with/without glaciated site
     idx = contains(string([ctd.transect]),sites{jj}).*contains(string([ctd.transect]),'out').*~contains(string([ctd.transect]), {'Jones Sound'; 'Harbour'; 'Shore';'Point';'OG';'Fram';'Talbot';'Terry';'to'}); 
    if length(data1) > 1
@@ -154,7 +152,7 @@ for i = 1:4 %1:length(dts)
     for ii = id_files{i}
     %% select which campaigns
     filename = dts(ii).name;
-    load(['C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_matfiles\Claire_PROCESSED\' filename]);
+    load(['..\Data\' filename]);
  %% Take transects only with/without glaciated site
     idx = contains(string([ctd.transect]),sites{jj}).*contains(string([ctd.transect]),'out'); 
    if length(data1) > 1
@@ -234,8 +232,7 @@ legend(classif, 'Location','southeast');
 
 
 % Save figure
-rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\SystematicInfleuncesPaperScripts\Paper_Figures_Matlab\';
-%rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\Combined_Nuts_CTD\Representative_Profiles\';
+rootfol = '..\figures\';
 saveas(f_all, [rootfol 'AnomalyDepthProfs-' classif_name '-bgdlines-' type '-100m.png']);
 
 clear ax_depth yr_check

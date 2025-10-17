@@ -10,7 +10,7 @@ close all
 set(0, 'defaultAxesFontSize', 13);
 
 % load data
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\Combined_CTD\combined_nuts_ctd_all_noflag_dz5.mat');
+load('../Data/combined_nuts_ctd_all_noflag_dz5.mat');
 
 LRce = struct(); LRfwt = struct(); ll = 1;
 years = 2019:1:2022;
@@ -69,7 +69,7 @@ for yy = 1:6
    
 end
 %
-rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_plots\Plots-Claire\BoxCharts\';
+rootfol = '../figures/';
 saveas(ax,[rootfol 'Boxchart-NutsOnly-All-Glaciers-yearsgrouped.png']);
 
 % 

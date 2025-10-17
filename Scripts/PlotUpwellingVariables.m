@@ -8,7 +8,7 @@ close
 set(0, 'defaultAxesFontSize', 14);
 
 %% what is going on with the upwelling depth
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\Combined_CTD\combined_nuts_ctd_all_noflag_dz5.mat');
+load('..\Data\combined_nuts_ctd_all_noflag_dz5.mat');
 
 %% check the glaciers are upwelling year-over-year
 combined = combined((combined.dist < 20. & ~contains(string([combined.Transect]), {'Jones Sound'; 'Harbour'; 'Shore';'Point';'OG';'Fram';'Talbot';'Terry';'to'})),:); % sites within 20km of shore 
@@ -93,5 +93,5 @@ nexttile(length(indicator));
 legend({'2019';'2020';'2021';'2022'});
 %legend(glaciers);
 
-saveas(gca, 'UpwellingVars_byGlacier.png');
+saveas(gca, '../figuresUpwellingVars_byGlacier.png');
 

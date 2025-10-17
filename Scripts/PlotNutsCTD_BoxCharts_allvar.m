@@ -10,7 +10,7 @@ close all
 set(0, 'defaultAxesFontSize', 13);
 
 % load data
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\Combined_CTD\combined_nuts_ctd_all_noflag_dz5.mat');
+load('../Data/combined_nuts_ctd_all_noflag_dz5.mat');
 
 LRce = struct(); LRfwt = struct(); ll = 1;
 years = 2019:1:2022;
@@ -53,7 +53,7 @@ end
 nexttile(2);
 l =legend(num2str([2019:2022]'), 'Fontsize', 15, 'Position', [0.9012 0.58 0.0805 0.1029]);
 % I usually pause here to move the legend to a better spot on the figure
-rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_plots\Plots-Claire\BoxCharts\';
+rootfol = '../figures';
 saveas(ax,[rootfol 'Boxchart-newPCAVars-twodepths-notitle-logTu-CEd.png']);
 
 

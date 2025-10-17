@@ -7,9 +7,9 @@ close all
 clear
 
 % Set ctd directory and load combined dataset
-ctd_root = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_matfiles\Claire_PROCESSED\';
-dts = dir([ctd_root '*.mat']);
-load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\Combined_CTD\combined_nuts_ctd_all_noflag_dz5.mat')
+ctd_root = '../Data/';
+dts = dir([ctd_root '*_CTD_Data50cm_bin.mat']);
+load('../Data/combined_nuts_ctd_all_noflag_dz5.mat')
 
 T = table();
 
@@ -112,8 +112,7 @@ T.idx_N =  T.doaN + +T.tempaN + T.dzN + T.dno3N + T.turbaN;
 T.idx =  T.doaN + +T.tempaN + T.dzN + T.turbaN;
 
 %
-save('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\combined_CTD\UpwellingIndex.mat', 'T');
-%writetable(T, ['C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\nutrients\master_sheets\combined_CTD\UpwellingIndex.csv'])
+save('../Data/UpwellingIndex.mat', 'T');
 figure;
 bar(1:height(T), T.idx); hold on;
 
