@@ -1,0 +1,244 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plot anomaly depth profiles. Figures 6 and 9.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+clear all
+close all
+%% Plots TS and Depth profiles for given sites during all summer campaigns, colored by station
+% one TS and one length(vars) set of depth profiles is produced
+set(0, 'defaultAxesFontSize', 14);
+load('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\ModelWork\Functions\Colormaps-ModelStory.mat');
+cols_classif = [[0; 0.447; 0.8],[0.850; 0.325; 0.098],[0.929; 0.694; 0.125],[0.466; 0.647; 0.188]]'; % site classif colours
+%cols_classif = cmocean('matter',4); cols_classif(1,:) = brighten(cols_classif(1,:), -0.7); % glacier colours
+
+type = 'mix';
+%%%%% Set different variables for the profiles
+if all(type == 'BGC')
+vars = {'ODO_molL'; 'turb'; 'chla'};
+labels = {'DO'; 'Turbidity'; 'Chlorophyll-\alpha'};
+short = {'DO'; 'Turb.'; 'Chla-\alpha'};
+units = {' (mol L^{-1})'; ' (NTU)'; ' (RFU)'};
+xlimits = [[-117 60]; [-7 10]; [-21 27]];
+elseif all(type == 'mix')
+vars = {'CE';'ODO_molL';'turb';'chla'};
+labels = {'CR';'DO'; 'Turbidity';'Chlorophyll-\alpha'};
+short = {'CR';'DO';'Turb.';'Chl-\alpha'};
+units = {' (N m^{-2})';' (mol L^{-1})';' (NTU)';' (RFU)'};
+xlimits = [[-200 850];[-120 70];[-1 12];[-5 26]];
+elseif all(type == 'all')
+vars = {'CT'; 'SA'; 'CE';'ODO_molL'; 'turb'; 'chla'};
+labels = {'Temperature'; 'Absolute Salinity'; 'CR';'Dissolved O_2'; 'Turbidity'; 'Chlorophyll-\alpha'};
+short = {'CT'; 'S'; 'CR';'DO'; 'Turb.'; 'Chl-\alpha'};
+units = {' (^oC)'; ' (g kg^{-1})'; ' (N m^{-2})';' (mol L^{-1})'; ' (NTU)'; ' (RFU)'};
+xlimits = [[-1.5 4.5]; [-12 2]; [-200 850]; [-120 70]; [-1 20]; [-5 26]];
+end
+
+%%%%%%%% classifications
+classif_name = 'allsites';
+% if all sites
+if all(classif_name == 'allsites')
+    sites = {{'Belcher'; 'Sverdrup'; 'Jakeman';}; {'Sydkap'; 'Terry'}; {'Grise'; 'Fram'}; {'True'}};
+    classif = {'Glacierized-Open';'Glacierized-Fjorded';'Riverine-Fjorded';'Riverine-Open'};
+elseif all(classif_name=='glaciers')
+    sites = {{'Belcher'}; {'Sydkap'}; {'Sverdrup'}; {'Jakeman'}};
+    classif = {'Belcher'; 'Sydkap'; 'Sverdrup'; 'Jakeman'};
+end
+
+% pull correct files from directory
+id_files = {11 13 [14 1] [3 15]};
+
+cd('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_matfiles\Claire_PROCESSED\')
+dts = dir('*.mat');
+cd('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\')
+
+%%%% start plotting
+    f_all = figure(1); f_all.Position =  [0  0 600 700]; tiledlayout(1,length(vars), 'TileSpacing','compact','Padding','compact');
+
+for jj= 1:length(sites)
+    data = struct();
+    meanprofs = struct(); 
+    yrs = 2019:2022;
+  
+%% All data from all years for mean profile for site characterization
+for i = 1:4 
+   data1 = struct();
+   meanprof1 = struct();
+    for ii = id_files{i}
+    %% select which campaigns
+    filename = dts(ii).name;
+    load(['C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_matfiles\Claire_PROCESSED\' filename]);
+ %% Take transects only with/without glaciated site
+    idx = contains(string([ctd.transect]),sites{jj}).*contains(string([ctd.transect]),'out').*~contains(string([ctd.transect]), {'Jones Sound'; 'Harbour'; 'Shore';'Point';'OG';'Fram';'Talbot';'Terry';'to'}); 
+   if length(data1) > 1
+       data1 = [data1 ctd(logical(idx))];
+   else
+       data1 = ctd(logical(idx));
+   end
+  %
+   if isempty(data1)
+       continue
+   end
+    [dists, dist_idcs] = find_distance(data1); data1 = data1(dists < 20.);
+    % concat all the profiles from all years together
+    meanprof1.year = yrs(i);
+    for vv = 1:length(vars)
+        meanstruct = GetMeanProfile(data1, vars{vv});
+        meanprof1.(vars{vv}) = meanstruct.(vars{vv});
+    end
+    meandepth = GetMeanProfile(data1, 'depth'); 
+    meanprof1.depth = meandepth.depth;
+    %
+    if length(fields(meanprofs)) == 0
+        meanprofs = meanprof1;
+    else
+        meanprofs = [meanprofs meanprof1];
+    end
+    %
+    if length(data) == 1
+        data = data1;
+    else
+        data = [data data1];
+    end
+    end
+end
+% Get average profiles for 2021 and 2022 where 2 sampling campaigns have to
+% be combined
+for vv = 1:length(vars)
+    mean21 = GetMeanProfile(meanprofs([meanprofs.year] == 2021),vars{vv});
+    meanprof21.(vars{vv}) = mean21.(vars{vv});
+    mean22 = GetMeanProfile(meanprofs([meanprofs.year] == 2022),vars{vv});
+    meanprof22.(vars{vv}) = mean22.(vars{vv});
+end
+meanprof21.depth = mean21.depth;
+meanprof22.depth = mean22.depth;
+meanprof21.year = 2021; meanprof22.year = 2022;
+meanprofs = [meanprofs(1:2) meanprof21 meanprof22];
+%% get the mean outer profile
+cruiseIDs = {'V1907';'V2007';'V2108';'V2208'};
+outer = struct();
+for cc = 1:4
+    outer1 = GetOutsideProf(cruiseIDs{cc}); 
+    if length(outer) == 1
+        outer = outer1;
+    else
+        outer = [outer outer1];
+    end
+end
+%% Plot Background profiles
+for mm = 1:length(vars)
+    figure(f_all);
+    nexttile(mm);
+    outer_prof = GetMeanProfile(outer, vars{mm});
+    clra = cols_classif(jj,:); B = 0.1; a = 0.3;
+    % background proffiles
+    for nn = 1:4
+        if length(outer.depth) < length(meanprofs(nn).depth)
+        plot((meanprofs(nn).(vars{mm})(1:length(outer.depth))-outer.(vars{mm})), outer.depth, 'Color', [brighten(clra,B) a], 'LineWidth',1.5, 'Linestyle', '-','HandleVisibility','off'); hold on;
+        else
+        plot((meanprofs(nn).(vars{mm})-outer.(vars{mm})(1:length(meanprofs(nn).depth))), meanprofs(nn).depth, 'Color', [brighten(clra,B) a], 'LineWidth',1.5, 'Linestyle', '-', 'HandleVisibility','off'); hold on;
+        end
+    end
+end
+end
+
+%% mean profile
+for jj = 1:length(sites)
+    legfill = {}; yr_check = []; leg_plts=[];
+    data = struct();
+    yrs = 2019:2022;
+  
+%% All data from all years for mean profile for site characterization
+for i = 1:4 %1:length(dts)
+   data1 = struct();
+    for ii = id_files{i}
+    %% select which campaigns
+    filename = dts(ii).name;
+    load(['C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_matfiles\Claire_PROCESSED\' filename]);
+ %% Take transects only with/without glaciated site
+    idx = contains(string([ctd.transect]),sites{jj}).*contains(string([ctd.transect]),'out'); 
+   if length(data1) > 1
+       data1 = [data1 ctd(logical(idx))];
+   else
+       data1 = ctd(logical(idx));
+   end
+  %
+   if isempty(data1)
+       continue
+   end
+    [dists, dist_idcs] = find_distance(data1); data1 = data1(dists < 5.);
+    %
+    if length(data) == 1
+        data = data1;
+    else
+        data = [data data1];
+    end
+    end
+end
+%% get the mean outer profile
+cruiseIDs = {'V1907';'V2007';'V2108';'V2208'};
+outer = struct();
+for cc = 1:4
+    outer1 = GetOutsideProf(cruiseIDs{cc}); 
+    if length(outer) == 1
+        outer = outer1;
+    else
+        outer = [outer outer1];
+    end
+end
+%% plot mean profiles
+for mm = 1:length(vars)
+    figure(f_all);
+    nexttile(mm);
+    prof = GetMeanProfile(data, vars{mm});
+    outer_prof = GetMeanProfile(outer, vars{mm});
+    clra = cols_classif(jj,:);
+        if length(outer.depth) < length(prof.depth)
+        plot((prof.(vars{mm})(1:length(outer.depth))-outer.(vars{mm})), outer.depth, 'Color', clra, 'LineWidth',2.5, 'Linestyle', '-'); hold on;
+        else
+        plot((prof.(vars{mm})- outer.(vars{mm})(1:length(prof.depth))), prof.depth, 'Color', clra, 'LineWidth', 2.5, 'Linestyle', '-'); hold on;
+        end
+    % 
+    axis ij;
+    if mm >1 
+    ax = gca;
+    set(ax, 'YTickLabels', []);
+    end
+    if i ==4
+    xlabel([short{mm} ' Anomaly' units{mm}]);
+    end
+    if i == 1
+    %title(labels{mm});
+    end
+    ylim([0 100]);
+    if mm == 1
+        ylabel('Depth (m)')
+    end
+    xlim(xlimits(mm,:));
+    xline(0, 'HandleVisibility','off');
+end
+
+end
+
+for nn = 1:length(vars)
+    nexttile(nn);
+    grid('on'); grid('minor');
+    yline(30, '--', 'HandleVisibility','off');
+    set(gca,'Color',[1 1 1]*0.9) % background colour so Bl stands out
+end
+
+
+figure(f_all);
+nexttile(3);
+legend(classif, 'Location','southeast');
+
+
+% Save figure
+rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\SystematicInfleuncesPaperScripts\Paper_Figures_Matlab\';
+%rootfol = 'C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Analysis\Combined_Nuts_CTD\Representative_Profiles\';
+saveas(f_all, [rootfol 'AnomalyDepthProfs-' classif_name '-bgdlines-' type '-100m.png']);
+
+clear ax_depth yr_check
+%}
+
+cd('C:\Users\claire\Dropbox (Bhatia Lab)\Bhatia Lab Team Folder\Projects\Devon\Multi-year_analyses\Annual_CTD_Processed\Annual_CTD_mfiles\Claire_mfiles\SystematicInfleuncesPaperScripts\');
