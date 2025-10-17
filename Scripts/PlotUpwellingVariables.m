@@ -93,3 +93,5 @@ nexttile(length(indicator));
 legend({'2019';'2020';'2021';'2022'});
 %legend(glaciers);
 
+saveas(gca, 'UpwellingVars_byGlacier.png');
+
